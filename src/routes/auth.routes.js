@@ -55,4 +55,4 @@ router.post(
   verifyResetPasswordTokenAndResetPassword
 );
 
-export { router as authRoutes };
+export default router;
