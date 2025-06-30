@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.status(200).json({
-    message: "Welcome to trelloq api",
+    message: "Welcome to TaskPro api",
   });
 });
 

@@ -52,13 +52,13 @@ const registerUser = async (req, res) => {
 
     const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
     const emailBody = `
-      <h1>Welcome to Trelloq</h1>
+      <h1>Welcome to TaskPro</h1>
       <p>Hi ${name},</p>
-      <p>Thank you for registering with Trelloq. Please click the link below to verify your email address:</p>
+      <p>Thank you for registering with TaskPro. Please click the link below to verify your email address:</p>
       <a href="${verificationLink}">Verify Email</a>
       <p>If you did not create an account, please ignore this email.</p>
     `;
-    const emailSubject = "Verify Your Email - Trelloq";
+    const emailSubject = "Verify Your Email - TaskPro";
 
     const isEmailSent = await sendEmail(email, emailSubject, emailBody);
 
@@ -114,13 +114,13 @@ const loginUser = async (req, res) => {
 
         const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
         const emailBody = `
-      <h1>Welcome to Trelloq</h1>
+      <h1>Welcome to TaskPro</h1>
       <p>Hi ${name},</p>
-      <p>Thank you for registering with Trelloq. Please click the link below to verify your email address:</p>
+      <p>Thank you for registering with TaskPro. Please click the link below to verify your email address:</p>
       <a href="${verificationLink}">Verify Email</a>
       <p>If you did not create an account, please ignore this email.</p>
     `;
-        const emailSubject = "Verify Your Email - Trelloq";
+        const emailSubject = "Verify Your Email - TaskPro";
 
         const isEmailSent = await sendEmail(email, emailSubject, emailBody);
 
@@ -273,7 +273,7 @@ const resetPasswordRequest = async (req, res) => {
       <a href="${resetLink}">Reset Password</a>
       <p>If you did not request this, please ignore this email.</p>
     `;
-    const emailSubject = "Reset Your Password - Trelloq";
+    const emailSubject = "Reset Your Password - TaskPro";
 
     const isEmailSent = await sendEmail(email, emailSubject, emailBody);
 

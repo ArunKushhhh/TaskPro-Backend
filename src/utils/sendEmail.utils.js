@@ -18,7 +18,7 @@ export const sendEmail = async (toEmail, subject, htmlContent) => {
     }
     const msg = {
       to: toEmail,
-      from: `Trelloq <${fromEmail}>`,
+      from: `TaskPro <${fromEmail}>`,
       subject,
       html: htmlContent,
     };
