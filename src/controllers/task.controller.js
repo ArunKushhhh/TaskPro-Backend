@@ -406,9 +406,80 @@ const addComment = async (req, res) => {
   }
 };
 
-const watchTask = async (req, res) => {};
+const watchTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
 
-const archiveTask = async (req, res) => {};
+    const task = await Task.findById(taskId);
+    if (!task) return res.status(404).json({ message: "Task not found" });
+
+    const project = await Project.findById(task.project);
+    if (!project) return res.status(404).json({ message: "Project not found" });
+
+    const isMember = project.members.some(
+      (m) => m.user.toString() === req.user._id.toString()
+    );
+    if (!isMember) {
+      return res
+        .status(403)
+        .json({ message: "You are not a member of this project" });
+    }
+
+    const isWatching = task.watchers.includes(req.user._id);
+
+    if (!isWatching) {
+      task.watchers.push(req.user._id);
+    } else {
+      task.watchers = task.watchers.filter(
+        (w) => w.toString() !== req.user._id.toString()
+      );
+    }
+
+    await task.save();
+
+    await recordActivity(req.user._id, "updated_task", "Task", taskId, {
+      description: `${isWatching ? "stopped watching" : "started watching"} task ${task.title}`,
+    });
+
+    res.status(200).json(task);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal serer error" });
+  }
+};
+
+const archiveTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    const task = await Task.findById(taskId);
+    if (!task) return res.status(404).json({ message: "Task not found" });
+
+    const project = await Project.findById(task.project);
+    if (!project) return res.status(404).json({ message: "Project not found" });
+
+    const isMember = project.members.some(
+      (m) => m.user.toString() === req.user._id.toString()
+    );
+    if (!isMember) {
+      return res
+        .status(403)
+        .json({ message: "You are not a member of this project" });
+    }
+
+    const isArchived = task.isArchived;
+
+    task.isArchived = !isArchived;
+    await task.save();
+
+    await recordActivity(req.user._id, "updated_task", "Task", taskId, {
+      description: `${isArchived ? "unarchived" : "archived"} task ${task.title}`,
+    });
+
+    res.status(200).json(task);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 export {
   createTask,
@@ -424,5 +495,5 @@ export {
   getCommentByTaskId,
   addComment,
   watchTask,
-  archiveTask
+  archiveTask,
 };
