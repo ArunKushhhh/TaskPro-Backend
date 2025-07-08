@@ -66,8 +66,8 @@ const getTaskById = async (req, res) => {
     const { taskId } = req.params;
 
     const task = await Task.findById(taskId)
-      .populate("assignees", "name profilePicture")
-      .populate("watchers", "name profilePicture");
+      .populate("assignees", "name profilePicture _id")
+      .populate("watchers", "name profilePicture _id");
 
     if (!task) return res.status(404).json({ message: "Task not found" });
 
@@ -228,7 +228,7 @@ const updateTaskAssignees = async (req, res) => {
     await task.save();
 
     await recordActivity(req.user._id, "updated_task", "Task", taskId, {
-      description: `updated task assignees from ${oldAssignees} to ${assignees}`,
+      description: `updated task assignees from ${oldAssignees.length} to ${assignees.length}`,
     });
 
     res.status(200).json(task);
@@ -443,6 +443,7 @@ const watchTask = async (req, res) => {
 
     res.status(200).json(task);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Internal serer error" });
   }
 };
@@ -481,6 +482,39 @@ const archiveTask = async (req, res) => {
   }
 };
 
+const deleteTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    const task = await Task.findById(taskId);
+    if (!task) return res.status(404).json({ message: "Task not found" });
+
+    const project = await Project.findById(task.project);
+    if (!project) return res.status(404).json({ message: "Project not found" });
+
+    const isMember = project.members.some(
+      (m) => m.user.toString() === req.user._id.toString()
+    );
+    if (!isMember) {
+      return res
+        .status(403)
+        .json({ message: "You are not a member of this project" });
+    }
+
+    const taskTitle = task.title;
+
+    await Task.findByIdAndDelete(taskId);
+    project.tasks = project.tasks.filter(
+      (t) => t.toString() !== taskId.toString()
+    );
+    await project.save();
+
+    res.status(200).json({ message: `Deleted Task ${taskTitle}` });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export {
   createTask,
   getTaskById,
@@ -496,4 +530,5 @@ export {
   addComment,
   watchTask,
   archiveTask,
+  deleteTask,
 };

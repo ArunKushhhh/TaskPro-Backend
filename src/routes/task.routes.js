@@ -8,6 +8,7 @@ import {
   addSubTask,
   archiveTask,
   createTask,
+  deleteTask,
   getActivityByResourceId,
   getCommentByTaskId,
   getTaskById,
@@ -160,4 +161,14 @@ router.post(
   }),
   archiveTask
 );
+
+router.delete(
+  "/:taskId/delete",
+  authMiddleware,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+  }),
+  deleteTask
+);
+
 export default router;
