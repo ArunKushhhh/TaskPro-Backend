@@ -98,9 +98,12 @@ const getWorkspaceProjects = async (req, res) => {
   }
 };
 
+const getWorkspaceStats = async (req, res) => {};
+
 export {
   createWorkspace,
   getWorkspaces,
   getWorkspaceDetails,
   getWorkspaceProjects,
+  getWorkspaceStats,
 };
