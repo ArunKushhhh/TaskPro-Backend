@@ -223,7 +223,7 @@ const getWorkspaceStats = async (req, res) => {
     const projectStatusData = [
       { name: "Completed", value: 0, color: "#10b981" },
       { name: "In Progress", value: 0, color: "#3b82f6" },
-      { name: "To Do", value: 0, color: "#f59e0b" },
+      { name: "Planning", value: 0, color: "#f59e0b" },
     ];
 
     // Count projects by status
@@ -235,7 +235,7 @@ const getWorkspaceStats = async (req, res) => {
         case "In Progress":
           projectStatusData[1].value++;
           break;
-        case "To Do":
+        case "Planning":
           projectStatusData[2].value++;
           break;
       }
